@@ -13,7 +13,7 @@ def predict_trip(trip_dir, model, beta=BETA):
     start = time.perf_counter()
     trip = load_trip(trip_dir)
     cand = build_candidates(trip)
-    cand["p"] = model.predict_proba(cand[FEATURES].to_numpy())[:, 1]
+    cand["p"] = model.predict_proba(cand[FEATURES].to_numpy())[:, 1] if len(cand) else 0.0
     clf = np.full(len(trip.xy), -1)
     best = cand.loc[cand.groupby("point").p.idxmax()]
     clf[best.point.to_numpy()] = best.arc.to_numpy()
@@ -31,7 +31,7 @@ def evaluate_trip(trip_dir, result):
            "reference_continuity": continuity(label[labeled], trip.arcs)}
     for name in ["classifier", "hmm"]:
         pred = result[f"{name}_pred"]
-        out[f"{name}_top1"] = float((pred[labeled] == label[labeled]).mean())
+        out[f"{name}_top1"] = float((pred[labeled] == label[labeled]).mean()) if labeled.any() else 0.0
         out[f"{name}_continuity"] = continuity(pred[pred >= 0], trip.arcs)
         route = result["route"] if name == "hmm" else collapse(pred[pred >= 0])
         out.update({f"{name}_{k}": v for k, v in route_prf(route, ref).items()})

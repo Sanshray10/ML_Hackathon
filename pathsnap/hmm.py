@@ -55,6 +55,8 @@ class RoadGraph:
 def decode(trip, cand, beta=BETA):
     """Viterbi over candidate arcs. cand: one trip's candidate rows with point, arc, pos, p.
     Returns the decoded arc per GPS point (-1 where a point has no candidates) and a connected route."""
+    if cand.empty:
+        return np.full(len(trip.xy), -1), np.empty(0, dtype=np.int64)
     cand = cand.sort_values(["point", "rank"])
     length = arc_lengths(trip)
     uniq = np.unique(cand.arc.to_numpy())
