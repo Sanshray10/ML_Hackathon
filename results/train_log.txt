@@ -1,0 +1,144 @@
+== GaussianNB
+  fold 0: f1=0.8653 top1=0.8726 logloss=0.5468
+  fold 1: f1=0.8638 top1=0.8565 logloss=0.4036
+  fold 2: f1=0.8618 top1=0.8698 logloss=0.5413
+  fold 3: f1=0.8923 top1=0.9158 logloss=0.3083
+  fold 4: f1=0.8540 top1=0.8330 logloss=0.4397
+model                                   GaussianNB
+family                               Probabilistic
+config                  default var_smoothing=1e-9
+cv_f1_macro                               0.867446
+cv_f1_std                                 0.014549
+cv_top1                                   0.869536
+cv_log_loss                               0.447961
+train_top1                                0.870812
+test_top1                                 0.865154
+test_accuracy                             0.908582
+test_precision_macro                      0.823818
+test_recall_macro                         0.907487
+test_f1_macro                             0.856021
+test_log_loss                             0.486249
+test_continuity                            0.72926
+test_route_f1                             0.862184
+train_time_s                              0.320598
+inference_time_s                          0.024415
+== LogReg
+  fold 0: f1=0.9035 top1=0.8764 logloss=0.1520
+  fold 1: f1=0.9106 top1=0.8693 logloss=0.1317
+  fold 2: f1=0.9088 top1=0.8832 logloss=0.1497
+  fold 3: f1=0.9399 top1=0.9329 logloss=0.0958
+  fold 4: f1=0.8994 top1=0.8523 logloss=0.1436
+model                                  LogReg
+family                                 Linear
+config                  L2, C=1, standardised
+cv_f1_macro                          0.912446
+cv_f1_std                             0.01598
+cv_top1                              0.882829
+cv_log_loss                          0.134572
+train_top1                           0.884029
+test_top1                            0.868656
+test_accuracy                        0.946667
+test_precision_macro                 0.904576
+test_recall_macro                    0.904677
+test_f1_macro                        0.904627
+test_log_loss                        0.130059
+test_continuity                      0.730857
+test_route_f1                        0.875154
+train_time_s                         2.306166
+inference_time_s                     0.014061
+== KNN
+  fold 0: f1=0.9171 top1=0.8808 logloss=0.1586
+  fold 1: f1=0.9224 top1=0.8696 logloss=0.1324
+  fold 2: f1=0.9115 top1=0.8702 logloss=0.1602
+  fold 3: f1=0.9501 top1=0.9370 logloss=0.0808
+  fold 4: f1=0.9078 top1=0.8483 logloss=0.1489
+model                                                                 KNN
+family                                                     Instance-based
+config                  k=50, distance-weighted, standardised, 200k-ro...
+cv_f1_macro                                                      0.921793
+cv_f1_std                                                        0.016774
+cv_top1                                                          0.881175
+cv_log_loss                                                      0.136153
+train_top1                                                         0.9258
+test_top1                                                        0.878116
+test_accuracy                                                    0.956862
+test_precision_macro                                             0.927463
+test_recall_macro                                                 0.91647
+test_f1_macro                                                    0.921847
+test_log_loss                                                    0.120952
+test_continuity                                                  0.745089
+test_route_f1                                                     0.87876
+train_time_s                                                     0.432545
+inference_time_s                                                16.397356
+== RandomForest
+  fold 0: f1=0.9310 top1=0.8895 logloss=0.1069
+  fold 1: f1=0.9381 top1=0.8898 logloss=0.0882
+  fold 2: f1=0.9251 top1=0.8918 logloss=0.1136
+  fold 3: f1=0.9629 top1=0.9504 logloss=0.0542
+  fold 4: f1=0.9238 top1=0.8777 logloss=0.1007
+model                                    RandomForest
+family                             Ensemble (bagging)
+config                  200 trees, min_samples_leaf=5
+cv_f1_macro                                  0.936159
+cv_f1_std                                    0.015964
+cv_top1                                      0.899839
+cv_log_loss                                  0.092725
+train_top1                                   0.963456
+test_top1                                    0.890399
+test_accuracy                                0.962751
+test_precision_macro                         0.937121
+test_recall_macro                            0.928457
+test_f1_macro                                0.932717
+test_log_loss                                0.088232
+test_continuity                               0.82974
+test_route_f1                                0.904901
+train_time_s                               106.540687
+inference_time_s                             0.279154
+== LightGBM
+  fold 0: f1=0.9313 top1=0.8927 logloss=0.1063
+  fold 1: f1=0.9356 top1=0.8874 logloss=0.0859
+  fold 2: f1=0.9209 top1=0.8863 logloss=0.1203
+  fold 3: f1=0.9626 top1=0.9479 logloss=0.0586
+  fold 4: f1=0.9235 top1=0.8781 logloss=0.1033
+model                                                 LightGBM
+family                                                Boosting
+config                  defaults: 100 trees, lr=0.1, 31 leaves
+cv_f1_macro                                           0.934793
+cv_f1_std                                             0.016647
+cv_top1                                               0.898474
+cv_log_loss                                           0.094866
+train_top1                                            0.923246
+test_top1                                             0.892855
+test_accuracy                                         0.962355
+test_precision_macro                                   0.93196
+test_recall_macro                                     0.933656
+test_f1_macro                                         0.932805
+test_log_loss                                         0.094446
+test_continuity                                       0.818003
+test_route_f1                                         0.899965
+train_time_s                                          1.989153
+inference_time_s                                      0.060641
+== MLP
+  fold 0: f1=0.9279 top1=0.8913 logloss=0.1223
+  fold 1: f1=0.9344 top1=0.8854 logloss=0.0921
+  fold 2: f1=0.9148 top1=0.8749 logloss=0.1393
+  fold 3: f1=0.9585 top1=0.9479 logloss=0.0595
+  fold 4: f1=0.9220 top1=0.8747 logloss=0.1061
+model                                                          MLP
+family                                              Neural network
+config                  64-32 ReLU, adam, early stopping (10% val)
+cv_f1_macro                                               0.931527
+cv_f1_std                                                 0.016763
+cv_top1                                                    0.89484
+cv_log_loss                                               0.103848
+train_top1                                                 0.92021
+test_top1                                                 0.892698
+test_accuracy                                             0.961378
+test_precision_macro                                      0.932049
+test_recall_macro                                         0.929388
+test_f1_macro                                             0.930712
+test_log_loss                                             0.091851
+test_continuity                                           0.823692
+test_route_f1                                             0.902927
+train_time_s                                            136.317574
+inference_time_s                                          0.050835
