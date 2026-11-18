@@ -71,6 +71,10 @@ python scripts/train_models.py     # model comparison (all 6 models)
 python scripts/tune.py             # Bayesian HPO on LightGBM
 python scripts/hmm_eval.py         # HMM decoder tuning and evaluation, writes models/config.json
 python scripts/make_maps.py student_test   # Folium maps
+python scripts/candidate_stats.py          # candidate row counts and miss rates
+python scripts/lgbm_learning_curve.py      # LightGBM train/validation log loss per boosting round
+python scripts/evaluate_trips.py student_test     # per-trip results of the deployed pipeline
+python scripts/evaluate_trips.py evaluator_test   # final evaluation (run once, after development)
 ```
 
 All randomness is seeded (`SEED = 42`).
