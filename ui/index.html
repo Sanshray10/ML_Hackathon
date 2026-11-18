@@ -86,7 +86,7 @@ async function runTrip(id, button) {
     data.route.forEach(seg => L.polyline(seg, { color: '#e5383b', weight: 4, opacity: 0.8 }).addTo(routeLayer));
     map.fitBounds(L.latLngBounds(data.gps));
     document.getElementById('metrics').innerHTML = Object.entries(LABELS)
-      .map(([k, label]) => `<tr><td>${label}</td><td>${Number.isInteger(data.metrics[k]) ? data.metrics[k] : data.metrics[k].toFixed(4)}</td></tr>`)
+      .map(([k, label]) => `<tr><td>${label}</td><td>${k.startsWith('n_') ? data.metrics[k] : data.metrics[k].toFixed(4)}</td></tr>`)
       .join('');
     status.textContent = `Trip ${id}: done`;
   } catch (e) { status.textContent = `Error: ${e.message}`; }
