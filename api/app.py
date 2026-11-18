@@ -21,7 +21,7 @@ model = joblib.load(ROOT / "models" / CONFIG["model"])
 log.info("loaded %s (beta=%s), serving trips from %s", CONFIG["model"], CONFIG["beta"], DATA_DIR)
 
 app = FastAPI(title="PathSnap")
-app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
+app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"], allow_private_network=True)
 
 
 class PredictRequest(BaseModel):
