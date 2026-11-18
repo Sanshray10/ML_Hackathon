@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PathSnap Evaluator</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+  body { margin: 0; font-family: system-ui, sans-serif; display: flex; height: 100vh; background: #fafafa; color: #222; }
+  #side { width: 320px; padding: 16px; overflow-y: auto; border-right: 1px solid #ddd; box-sizing: border-box; }
+  #map { flex: 1; }
+  h1 { font-size: 20px; margin: 0 0 12px; }
+  label { font-size: 13px; }
+  input { width: 100%; padding: 6px; box-sizing: border-box; margin: 4px 0 12px; }
+  #trips button { display: block; width: 100%; margin: 4px 0; padding: 8px; cursor: pointer; border: 1px solid #ccc; background: #fff; border-radius: 4px; text-align: left; }
+  #trips button.active { background: #1f6feb; color: #fff; border-color: #1f6feb; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 12px; }
+  td { padding: 3px 4px; border-bottom: 1px solid #eee; }
+  td:last-child { text-align: right; font-variant-numeric: tabular-nums; }
+  #status { font-size: 13px; color: #555; margin-top: 8px; }
+  .legend { background: #fff; padding: 6px 10px; border-radius: 4px; font-size: 13px; line-height: 1.6; }
+  .legend i { display: inline-block; width: 14px; height: 4px; margin-right: 6px; vertical-align: middle; }
+</style>
+</head>
+<body>
+<div id="side">
+  <h1>PathSnap</h1>
+  <label>API URL <input id="api"></label>
+  <button id="load">Load trips</button>
+  <div id="trips"></div>
+  <div id="status"></div>
+  <table id="metrics"></table>
+</div>
+<div id="map"></div>
+<script>
+const params = new URLSearchParams(location.search);
+const apiInput = document.getElementById('api');
+apiInput.value = params.get('api') || 'http://localhost:8000';
+const status = document.getElementById('status');
+const map = L.map('map').setView([20, 0], 2);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '&copy; OpenStreetMap' }).addTo(map);
+const gpsLayer = L.layerGroup().addTo(map), routeLayer = L.layerGroup().addTo(map);
+L.control.layers(null, { 'GPS observations': gpsLayer, 'Predicted route': routeLayer }).addTo(map);
+const legend = L.control({ position: 'bottomright' });
+legend.onAdd = () => Object.assign(L.DomUtil.create('div', 'legend'),
+  { innerHTML: '<i style="background:#1f6feb"></i>GPS observations<br><i style="background:#e5383b"></i>Predicted route' });
+legend.addTo(map);
+
+const LABELS = {
+  hmm_top1: 'Top-1 accuracy (HMM)', classifier_top1: 'Top-1 accuracy (classifier only)',
+  hmm_route_f1: 'Route F1 (HMM)', hmm_route_precision: 'Route precision (HMM)', hmm_route_recall: 'Route recall (HMM)',
+  classifier_route_f1: 'Route F1 (classifier only)', hmm_continuity: 'Continuity (HMM)',
+  classifier_continuity: 'Continuity (classifier only)', n_points: 'GPS points', n_labeled: 'Scored points',
+  runtime_s: 'Pipeline time (s)',
+};
+
+async function loadTrips() {
+  status.textContent = 'Loading trips...';
+  try {
+    const res = await fetch(`${apiInput.value}/trips`);
+    const { trips } = await res.json();
+    const box = document.getElementById('trips');
+    box.innerHTML = '';
+    trips.forEach(id => {
+      const b = document.createElement('button');
+      b.textContent = `Trip ${id}`;
+      b.onclick = () => runTrip(id, b);
+      box.appendChild(b);
+    });
+    status.textContent = `${trips.length} trips available`;
+  } catch (e) { status.textContent = `Could not reach API: ${e}`; }
+}
+
+async function runTrip(id, button) {
+  document.querySelectorAll('#trips button').forEach(b => b.classList.toggle('active', b === button));
+  status.textContent = `Running pipeline for trip ${id}...`;
+  try {
+    const res = await fetch(`${apiInput.value}/predict`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ trip_id: id }),
+    });
+    if (!res.ok) throw new Error(await res.text());
+    const data = await res.json();
+    gpsLayer.clearLayers(); routeLayer.clearLayers();
+    data.gps.forEach(p => L.circleMarker(p, { radius: 2, color: '#1f6feb', weight: 1, fillOpacity: 0.7 }).addTo(gpsLayer));
+    data.route.forEach(seg => L.polyline(seg, { color: '#e5383b', weight: 4, opacity: 0.8 }).addTo(routeLayer));
+    map.fitBounds(L.latLngBounds(data.gps));
+    document.getElementById('metrics').innerHTML = Object.entries(LABELS)
+      .map(([k, label]) => `<tr><td>${label}</td><td>${Number.isInteger(data.metrics[k]) ? data.metrics[k] : data.metrics[k].toFixed(4)}</td></tr>`)
+      .join('');
+    status.textContent = `Trip ${id}: done`;
+  } catch (e) { status.textContent = `Error: ${e.message}`; }
+}
+
+document.getElementById('load').onclick = loadTrips;
+loadTrips();
+</script>
+</body>
+</html>
