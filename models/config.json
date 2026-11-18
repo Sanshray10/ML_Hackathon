@@ -1,0 +1,4 @@
+{
+ "model": "LightGBM_tuned.joblib",
+ "beta": 2.0
+}
