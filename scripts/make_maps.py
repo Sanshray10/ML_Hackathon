@@ -30,7 +30,7 @@ def arc_lines(trip, arcs):
 def trip_map(trip_dir, model, beta):
     res = predict_trip(trip_dir, model, beta)
     trip = res["trip"]
-    m = folium.Map(tiles="cartodbpositron")
+    m = folium.Map()
     m.fit_bounds([trip.lonlat[:, ::-1].min(0).tolist(), trip.lonlat[:, ::-1].max(0).tolist()])
 
     a, b = trip.node_xy[trip.arcs[:, 0]], trip.node_xy[trip.arcs[:, 1]]
